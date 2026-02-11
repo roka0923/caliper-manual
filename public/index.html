@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Caliper-Manual</title>
+    <meta name="theme-color" content="#0a0a0a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Noto+Sans+KR:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/search_style.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">CALIPER-MANUAL</div>
+        <button class="btn-settings" id="openSettings" style="display: none;">⚙️</button>
+    </header>
+
+    <div class="main-controls">
+        <!-- Segmented Toggle -->
+        <div class="segmented-control" id="typeToggleContainer">
+            <div class="segment-slider"></div>
+            <div class="segment-option active" id="optDomestic">KR 국산차</div>
+            <div class="segment-option" id="optImported">DE 수입차</div>
+        </div>
+
+        <div id="searchTip" class="search-tip">💡 검색 조건을 입력 후 검색 버튼을 눌러주세요</div>
+
+        <!-- Search Form -->
+        <div class="search-form" id="searchForm">
+            <div class="form-group">
+                <label>코드</label>
+                <input type="text" id="sCode" placeholder="예: 16211, 26311 등">
+            </div>
+            <div class="form-group">
+                <label>모델명</label>
+                <input type="text" id="sModel" placeholder="예: 쏘나타, 그랜저 등">
+            </div>
+            <div class="form-group">
+                <label>하우징 각인</label>
+                <input type="text" id="sHousing" placeholder="예: 140093, UM, 4306 등">
+            </div>
+            <div class="form-group">
+                <label>캐리어 각인</label>
+                <input type="text" id="sCarrier" placeholder="예: 412116, UMEU, 4312 등">
+            </div>
+            <button id="btnSearch" class="btn-search-action">🔍 검색</button>
+        </div>
+    </div>
+
+    <main>
+        <div id="productCount" class="product-count"></div>
+        <div id="productList" class="product-list">
+            <!-- 리스트 아이템이 여기에 추가됨 -->
+        </div>
+
+        <div id="loadingSpinner" class="loading-spinner">
+            <div class="spinner"></div>
+            <p>제품 정보를 불러오고 있습니다...</p>
+        </div>
+
+        <div id="emptyState" class="empty-state">
+            <p>검색 결과가 없습니다.</p>
+        </div>
+
+        <div id="errorState" class="error-state">
+            <p>Firebase 연결에 실패했습니다.</p>
+            <button class="btn btn-secondary" style="margin-top: 15px;" onclick="app.openSettings()">설정 확인</button>
+        </div>
+    </main>
+
+    <!-- 제품 상세 화면 -->
+    <div id="detailOverlay" class="detail-overlay">
+        <div class="detail-header">
+            <button class="btn-back" onclick="app.closeProductDetail()">❮ 목록</button>
+            <div class="detail-title" id="detailTitle">제품 상세</div>
+        </div>
+        <div class="detail-content" id="detailContent">
+            <!-- 상세 내용이 여기에 추가됨 -->
+        </div>
+    </div>
+
+    <!-- 부품 상세 화면 -->
+    <div id="partOverlay" class="detail-overlay" style="z-index: 600;">
+        <div class="detail-header">
+            <button class="btn-back" onclick="app.closePartDetail()">❮ 제품</button>
+            <div class="detail-title" id="partTitle">부품 상세</div>
+        </div>
+        <div class="detail-content" id="partContent">
+            <!-- 부품 상세 내용이 여기에 추가됨 -->
+        </div>
+    </div>
+
+    <!-- 로그인 모달 -->
+    <div id="loginModal" class="modal-overlay" style="display: flex; z-index: 2000; background-color: #f8f9fa;">
+        <div class="modal" style="text-align: center; box-shadow: none; background: transparent;">
+            <div style="font-size: 3rem; margin-bottom: 20px;">🔒</div>
+            <h2 style="margin-bottom: 10px; color: var(--text-primary);">로그인이 필요합니다</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 30px;">Caliper-Manual 앱을 사용하려면<br>Google 계정으로 로그인해
+                주세요.</p>
+            <button class="btn btn-primary" id="btnLogin"
+                style="background: #4285F4; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                <span style="font-weight: 800;">Google 로그인</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 설정 모달 -->
+    <div id="settingsModal" class="modal-overlay">
+        <div class="modal" style="max-width: 500px;">
+            <div class="modal-title">관리자 설정</div>
+
+            <div style="margin-bottom: 20px;">
+                <h3 style="font-size: 1rem; margin-bottom: 10px;">사용자 관리</h3>
+                <div id="userList"
+                    style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 10px;">
+                    <!-- 사용자 리스트 -->
+                </div>
+            </div>
+
+            <div class="modal-actions"
+                style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 20px; flex-direction: column;">
+                <button class="btn btn-secondary" id="syncParts"
+                    style="width: 100%; margin-bottom: 10px; background: #e7f5ff; color: #1971c2;">🔄 부속품 데이터
+                    동기화</button>
+                <button class="btn btn-secondary" id="btnLogout"
+                    style="width: 100%; margin-bottom: 20px; background: #ffe3e3; color: #c92a2a;">로그아웃</button>
+                <div style="display: flex; gap: 12px; width: 100%;">
+                    <button class="btn btn-secondary" id="closeSettings">닫기</button>
+                </div>
+            </div>
+
+            <!-- Hidden Config (For reference only now) -->
+            <div style="display:none">
+                <input type="text" id="cfgApiKey">
+                <input type="text" id="cfgProjectId">
+                <input type="text" id="cfgStorageBucket">
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK (compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
+
+    <!-- Data & Custom App Logic -->
+    <script src="js/parts_data.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>

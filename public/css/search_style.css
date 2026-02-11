@@ -1,0 +1,131 @@
+.main-controls {
+    padding: 20px;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: var(--shadow-sm);
+    margin: calc(var(--header-height) + var(--safe-top) + 20px) 20px 20px;
+}
+
+/* Segmented Control Toggle */
+.segmented-control {
+    display: flex;
+    background: #e9ecef;
+    padding: 4px;
+    border-radius: 12px;
+    position: relative;
+    width: 100%;
+    margin: 0 auto 20px;
+    user-select: none;
+}
+
+.segment-option {
+    flex: 1;
+    text-align: center;
+    padding: 12px;
+    cursor: pointer;
+    z-index: 2;
+    font-weight: 700;
+    color: #868e96;
+    transition: color 0.3s;
+    font-size: 1rem;
+}
+
+.segment-option.active {
+    color: var(--accent-color);
+}
+
+.segment-slider {
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    left: 4px;
+    width: calc(50% - 4px);
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    z-index: 1;
+}
+
+.segmented-control.imported .segment-slider {
+    transform: translateX(100%);
+}
+
+.segmented-control.imported .segment-option.active {
+    color: #228be6;
+    /* Blue for imported */
+}
+
+/* Hide product count initially */
+.product-count {
+    display: none;
+    font-weight: bold;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+    padding: 0 5px;
+}
+
+/* Search Form */
+.search-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+}
+
+.form-group input {
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    font-size: 1rem;
+    background: #f8f9fa;
+    transition: all 0.2s;
+}
+
+.form-group input:focus {
+    background: #fff;
+    border-color: var(--accent-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+}
+
+.btn-search-action {
+    margin-top: 10px;
+    padding: 15px;
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.btn-search-action:active {
+    transform: scale(0.98);
+}
+
+.search-tip {
+    margin-top: 15px;
+    padding: 12px;
+    background-color: #ffe3e3;
+    color: #c92a2a;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: none;
+    /* JS will toggle */
+}
